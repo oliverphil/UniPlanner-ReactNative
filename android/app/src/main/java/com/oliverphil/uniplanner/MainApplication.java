@@ -1,4 +1,4 @@
-package com.invertase.rnfirebasestarter;
+package com.oliverphil.uniplanner;
 
 import androidx.multidex.MultiDexApplication;
 
