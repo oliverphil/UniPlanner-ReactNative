@@ -1,19 +1,23 @@
 import React from 'react'
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
 import {loginUser, userDetails} from '../utils/FirebaseUtils'
+
 export default class Login extends React.Component {
 
   state = { email: '', password: '', errorMessage: null }
 
   handleLogin = () => {
     loginUser(this.state).then(res => {
-      this.props.navigation.navigate('Dashboard')
+      console.log(this.props.screenProps)
+      this.props.screenProps.updateFunc('Dashboard')
+      this.props.navigation.navigate('Main')
     }).catch(err => {
       this.setState({errorMessage: err.message})
     })
   }
 
   render() {
+    console.log(this.props)
     return (
       <React.Fragment>
         <View style={styles.container}>

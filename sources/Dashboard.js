@@ -6,30 +6,15 @@ import { DrawerActions } from 'react-navigation-drawer';
 
 
 export default class Dashboard extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      currentUser: userDetails()
-    }
-
-    console.log(this.state.currentUser)
-  }
-
   render() {
-    const { currentUser } = this.state
+    console.log(this.props)
+    const currentUser = userDetails()
     return (
-      <React.Fragment>
-        <Header leftComponent={{icon: 'menu', onPress: () => {
-            console.log("toggle")
-            this.props.navigation.dispatch(DrawerActions.toggleDrawer())
-          }}} centerComponent={{text: "Dashboard"}}/>
-        <View style={styles.container}>
-          <Text>
-            Hi {currentUser && currentUser.email}!
-          </Text>
-        </View>
-      </React.Fragment>
+      <View style={styles.container}>
+        <Text>
+          Hi {currentUser && currentUser.email}!
+        </Text>
+      </View>
     )
   }
 }
