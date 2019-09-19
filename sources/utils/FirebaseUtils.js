@@ -1,11 +1,8 @@
-import firebase from "react-native-firebase";
+import * as firebase from "react-native-firebase";
 
-export class AuthenticationService {
+export default class AuthenticationService {
 
-  constructor() {
-  }
-
-  async registerUser(value) {
+  static async registerUser(value) {
     let {email, password} = value
 
     let create = await firebase.auth().createUserWithEmailAndPassword(email, password)
@@ -29,7 +26,7 @@ export class AuthenticationService {
   }
 
 
-  logoutUser() {
+  static logoutUser() {
     return new Promise((resolve, reject) => {
       if (firebase.auth().currentUser) {
         firebase.auth().signOut()
@@ -42,17 +39,21 @@ export class AuthenticationService {
       }
     })
   }
+
+  static userDetails() {
+    return firebase.auth().currentUser;
+  }
+
+  static loginUser(value) {
+    return new Promise((resolve, reject) => {
+      firebase.auth().signInWithEmailAndPassword(value.email, value.password)
+        .then(
+          res => resolve(res),
+          err => reject(err))
+    })
+  }
+
 }
 
-export function userDetails() {
-  return firebase.auth().currentUser;
-}
 
-export function loginUser(value) {
-  return new Promise((resolve, reject) => {
-    firebase.auth().signInWithEmailAndPassword(value.email, value.password)
-      .then(
-        res => resolve(res),
-        err => reject(err))
-  })
-}
+

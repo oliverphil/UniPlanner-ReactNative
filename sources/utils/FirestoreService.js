@@ -1,6 +1,10 @@
 import * as firebase from "react-native-firebase"
-import {userDetails} from "./FirebaseUtils";
+import AuthenticationService from "./FirebaseUtils";
 import {UtilsService} from "./UtilsService";
+
+const userDetails = () => {
+  return AuthenticationService.userDetails()
+}
 
 export default class FirestoreService {
 

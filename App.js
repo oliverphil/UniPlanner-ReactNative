@@ -11,6 +11,9 @@ import Login from './sources/authentication/Login'
 import Dashboard from './sources/Dashboard'
 import { AppView } from './sources/AppView'
 import DrawerNavigator from "react-navigation-drawer/src/navigators/createDrawerNavigator";
+import FirestoreService from "./sources/utils/FirestoreService";
+
+const storage = new FirestoreService();
 
 const CustomDrawerContentComponent = props => {
   console.log(props)
@@ -69,7 +72,13 @@ class App extends Component {
   render() {
     console.log(this.state)
     console.log(this.props)
-    return <Drawer {...this.props} updateFunc={this.updateView.bind(this)} screenProps={{updateFunc: this.updateView.bind(this), view: this.state.view}} />
+    return <Drawer {...this.props} updateFunc={this.updateView.bind(this)} screenProps={
+      {
+        updateFunc: this.updateView.bind(this),
+        view: this.state.view,
+        storage: storage
+      }
+    } />
   }
 }
 

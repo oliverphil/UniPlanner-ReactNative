@@ -1,7 +1,6 @@
 
 export class UtilsService {
 
-  constructor() { }
 
   static convert24to12(time){
     let hr = ((time % 1200) / 100).toString().split(".")[0];

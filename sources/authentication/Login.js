@@ -1,14 +1,14 @@
 import React from 'react'
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
-import {loginUser, userDetails} from '../utils/FirebaseUtils'
+import AuthenticationService from '../utils/FirebaseUtils'
 
 export default class Login extends React.Component {
 
   state = { email: '', password: '', errorMessage: null }
 
   handleLogin = () => {
-    loginUser(this.state).then(res => {
-      console.log(this.props.screenProps)
+
+    AuthenticationService.loginUser(this.state).then(res => {
       this.props.screenProps.updateFunc('Dashboard')
       this.props.navigation.navigate('Main')
     }).catch(err => {
@@ -17,7 +17,7 @@ export default class Login extends React.Component {
   }
 
   render() {
-    console.log(this.props)
+    console.log(AuthenticationService)
     return (
       <React.Fragment>
         <View style={styles.container}>
@@ -42,12 +42,14 @@ export default class Login extends React.Component {
             onChangeText={password => this.setState({ password })}
             value={this.state.password}
           />
-          <Button style={styles.button} id="login" title="Login" onPress={this.handleLogin} />
+        </View>
+        <View>
+          <Button id="login" title="Login" onPress={this.handleLogin} />
           {/*<Button*/}
           {/*  title="Don't have an account? Sign Up"*/}
           {/*  onPress={() => this.props.navigation.navigate('Register')}*/}
           {/*/>*/}
-          <Button style={styles.button} id="register" title="Register" onPress={() => this.props.navigation.navigate('Register')} />
+          <Button id="register" title="Register" onPress={() => this.props.navigation.navigate('Register')} />
         </View>
       </React.Fragment>
 
@@ -68,11 +70,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 8,
     paddingLeft: '5%'
-  },
-  button: {
-    width: '100%',
-    marginTop: 8,
-    borderColor: 'gray',
-    borderWidth: 1
   }
 })

@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import FirestoreService from "../utils/FirestoreService"
 import { View, Text, ActivityIndicator, ListRenderItem } from 'react-native'
-import {Icon} from "react-native-elements";
-
-const firestore = new FirestoreService();
+import {Icon, ListItem} from "react-native-elements";
 
 // export const Courses = props => {
 //   let courses = firestore.fetchCourseList();
@@ -18,10 +16,13 @@ const firestore = new FirestoreService();
 //   )
 // }
 
+
 class Courses extends React.Component {
 
   constructor(props){
     super(props)
+
+    const firestore = props.screenProps.storage;
 
     //fetch locally stored course list
     this.state = {
@@ -47,6 +48,7 @@ class Courses extends React.Component {
     }).catch(err => {
       this.setState({waiting: false})
     })
+    console.log('done')
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -54,28 +56,29 @@ class Courses extends React.Component {
   }
 
   renderCourses() {
-    if(this.state.courses || this.state.courses < 1) {
+    if(!this.state.courses || this.state.courses < 1) {
       return (
-        <React.Fragment style={{textAlign: 'center', marginTop: '45%'}}>
+        <View style={{marginTop: '55%', marginLeft: 'auto', marginRight: 'auto'}}>
           <Text>It doesn't look like there are any courses here.{'\n'}</Text>
-          <Text>Feel free to
-            <Text style={{color: 'cyan'}} onPress={() => console.log("new course")}>
-              Add a new course.
+          <Text style={{textAlign: 'center'}}>Feel free to
+            <Text style={{color: 'darkcyan'}} onPress={() => console.log("new course")}>
+              {' '}add a new course.
             </Text>
           </Text>
-        </React.Fragment>
+        </View>
       )
     } else {
       return (
         <React.Fragment>
-          {this.state.courses.map(course => {
+          {this.state.courses.map((course, key) => {
             return (
-              <View>
-                <Text id='code'>{course.code}</Text>
-                <Text id='details'>{course.details}</Text>
-                <Icon name='pencil' onPress={() => console.log('edit')} />
-                <Icon name='trash' onPress={() => console.log('delete')} />
-              </View>
+              <ListItem key={key} title={course.code} subtitle={course.details}  bottomDivider >
+                {/*<Text>*/}
+                {/*  <Text id={'code'}>{course.code}{'  '}<Text id={'details'} style={{textAlign: 'auto'}}>{course.details}</Text></Text>*/}
+                  <Icon name='edit' onPress={() => console.log('edit')} />
+                  <Icon name='delete' onPress={() => console.log('delete')} />
+                {/*</Text>*/}
+              </ListItem>
             )
           })}
         </React.Fragment>
@@ -88,7 +91,7 @@ class Courses extends React.Component {
     return (
       <View>
         {this.state.waiting ?
-          <ActivityIndicator />
+          <ActivityIndicator style={{marginTop: '65%'}} />
           :
           this.renderCourses()
         }
