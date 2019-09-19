@@ -1,5 +1,9 @@
 import React from 'react'
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
+import { AuthenticationService } from "../utils/FirebaseUtils";
+
+const firebase = new AuthenticationService();
+
 export default class SignUp extends React.Component {
 
   state = {
@@ -9,8 +13,11 @@ export default class SignUp extends React.Component {
   }
 
   handleSignUp = () => {
-    // TODO: Firebase stuff...
-    console.log('handleSignUp')
+    firebase.registerUser(this.state).then(res => {
+      this.props.navigation.navigate('Login')
+    }).catch(err => {
+      console.log(err)
+    })
   }
 
   render() {
