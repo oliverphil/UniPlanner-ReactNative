@@ -3,22 +3,24 @@ import {DrawerActions} from "react-navigation-drawer";
 import {Header, Icon} from "react-native-elements";
 import Dashboard from "./Dashboard";
 import Courses from "./courses/Courses"
+import Tasks from "./tasks/Tasks"
 
 const getView = (props) => {
   console.log(props)
   const view = props.screenProps.view
   if(view === "Dashboard") {
-    console.log('Dashboard')
     return (
       <Dashboard {...props} />
     )
   } else if(view === "Courses") {
-    console.log('Courses')
     return (
       <Courses {...props} />
     )
+  } else if(view === "Tasks") {
+    return (
+      <Tasks {...props} />
+    )
   }
-  console.log(view)
 }
 
 // export const AppView = props => {

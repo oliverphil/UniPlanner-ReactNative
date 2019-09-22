@@ -22,5 +22,8 @@ export const NavigatorUtil = props => (
     <ListItem title="Courses" leftAvatar={
       <Icon name='list' onPress={() => updateNav(props, 'Courses')} />
     } onPress={() => updateNav(props, 'Courses')} />
+    <ListItem title="Tasks" leftAvatar={
+      <Icon name='check-box' onPress={() => updateNav(props, 'Tasks')} />
+    } onPress={() => updateNav(props, 'Tasks')} />
   </View>
 )

@@ -8,7 +8,7 @@ export default class AuthenticationService {
     let create = await firebase.auth().createUserWithEmailAndPassword(email, password)
       .then((newUserCredentials) => {
         firebase.firestore()
-          .doc(`/users/${newUserCredentials.user.uid}`)
+          .doc('users').collection(newUserCredentials.user.uid)
           .set({email})
         return true
       })

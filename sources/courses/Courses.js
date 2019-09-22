@@ -45,7 +45,6 @@ class Courses extends React.Component {
   }
 
   renderCourses() {
-    console.log(this.state.courses);
     if(!this.state.courses || this.state.courses < 1) {
       return (
         <View style={{marginTop: '55%', marginLeft: 'auto', marginRight: 'auto'}}>

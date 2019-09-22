@@ -16,7 +16,6 @@ import FirestoreService from "./sources/utils/FirestoreService";
 const storage = new FirestoreService();
 
 const CustomDrawerContentComponent = props => {
-  console.log(props)
   return (
   <ScrollView>
     <SafeAreaView
@@ -74,8 +73,6 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state)
-    console.log(this.props)
     return <Drawer {...this.props} updateFunc={this.updateView.bind(this)} screenProps={
       {
         updateFunc: this.updateView.bind(this),

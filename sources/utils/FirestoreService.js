@@ -9,26 +9,12 @@ const userDetails = () => {
 export default class FirestoreService {
 
   classes = []
-  courses = [
-    {
-      details: "Secure Programming",
-      code: "CYBR271"
-    },
-    {
-      details: "Database Systems",
-      code: "SWEN304"
-    },
-    {
-      details: "Mobile Application Development",
-      code: "SWEN325"
-    }
-  ] //TODO: Remove this data
+  courses = []
   classInfo = {}
 
 
   fetchCourseList() {
-    let ret = firebase.firestore().collection(`/users/${userDetails().uid}/courses/`).get()
-    console.log(ret);
+    let ret = firebase.firestore().collection('users').doc(userDetails().uid).collection('courses').get()
     ret.then(res => {
       let courses = []
       res.docs.forEach(doc => {
@@ -61,6 +47,23 @@ export default class FirestoreService {
     return classes
   }
 
+  async fetchTaskInfo(courseCode) {
+    let tasks = []
+    if(!userDetails())
+      return tasks;
+    await firebase.firestore().collection('users').doc(userDetails().uid).collection('courses').doc(courseCode).collection('tasks').get()
+      .then(tsk => {
+        tsk.docs.forEach(doc => {
+          let data = doc.data()
+          data.id = doc.id
+          let date = data.dueDate
+          data.dueDate = new Date(date)
+          tasks.push(data)
+        })
+      })
+    return tasks
+  }
+
   fetchClassInfoNow(courseCode) {
     return this.classInfo[courseCode]
   }
@@ -83,6 +86,28 @@ export default class FirestoreService {
     }
     this.classes = classes
     return classes
+  }
+
+  async fetchAllTasks() {
+    let courses = this.fetchCourseList()
+    let courseDocs = await courses.then(res => {
+      return res.docs
+    })
+    let docs = []
+    courseDocs.forEach(doc => {
+      docs.push(doc.data())
+    })
+
+    let tasks = []
+    for(let course of docs) {
+      let task = await this.fetchTaskInfo(course.code).then(res => {
+        return res
+      })
+      let date = task.dueDate
+      task.dueDate = new Date(date)
+      tasks = tasks.concat(task)
+    }
+    return tasks
   }
 
   fetchAllClassesNow() {
@@ -117,6 +142,13 @@ export default class FirestoreService {
       this.classes.push(data)
       this.classInfo[data.code] = data
     })
+  }
+
+  addTask(data) {
+    let col = firebase.firestore().collection('users').doc(userDetails().uid).collection('courses').doc(data.code).collection('tasks')
+    let dueDate = data.dueDate
+    data.dueDate = dueDate.toString()
+    return col.add(data)
   }
 
   editCourse(data) {
@@ -204,6 +236,11 @@ export default class FirestoreService {
     firebase.firestore().doc(`/users/${userDetails().uid}/courses/${cls.code}/classes/${cls.id}`).delete()
   }
 
+  deleteTask(task) {
+    return firebase.firestore().collection('users').doc(userDetails().uid).collection('courses')
+      .doc(task.code).collection('tasks').doc(task.id).delete()
+  }
+
   editClass(cls) {
     let startTime = new Date(cls.startTime)
     let endTime = new Date(cls.endTime)
@@ -220,6 +257,18 @@ export default class FirestoreService {
     this.classInfo[cls.code].push(editedClass)
     return firebase.firestore().collection(`/users/${userDetails().uid}/courses/${cls.code}/classes/`)
       .doc(cls.id).set(editedClass).then(res => {
+        return true
+      }, err => {
+        return false
+      })
+  }
+
+  editTask(tsk) {
+    let dueDate = new Date(tsk.dueDate)
+    let editedTask = {...tsk}
+    editedTask.dueDate = Number((dueDate.getHours() * 100) + dueDate.getMinutes())
+    return firebase.firestore().collection('users').doc(userDetails().uid).collection('courses')
+      .doc(tsk.code).collection('tasks').doc(tsk.id).set(editedTask).then(res => {
         return true
       }, err => {
         return false
