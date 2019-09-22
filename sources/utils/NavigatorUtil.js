@@ -14,7 +14,7 @@ const updateNav = (props, target) => {
 export const NavigatorUtil = props => (
   <View>
     <ListItem leftAvatar={
-      <Icon name='arrow-back' onPress={() => props.navigation.dispatch(DrawerActions.toggleDrawer())}/>
+      <Icon name='close' onPress={() => props.navigation.dispatch(DrawerActions.toggleDrawer())}/>
     } onPress={() => props.navigation.dispatch(DrawerActions.toggleDrawer())} bottomDivide />
     <ListItem title="Dashboard" leftAvatar={
       <Icon name='home' onPress={() => updateNav(props, 'Dashboard')} />

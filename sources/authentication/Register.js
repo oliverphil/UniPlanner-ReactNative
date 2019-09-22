@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, TextInput, View, Button } from 'react-native'
-import { AuthenticationService } from "../utils/FirebaseUtils";
+import AuthenticationService from "../utils/FirebaseUtils";
 
 export default class SignUp extends React.Component {
 
@@ -12,6 +12,7 @@ export default class SignUp extends React.Component {
   }
 
   handleSignUp = () => {
+    console.log(AuthenticationService)
     AuthenticationService.registerUser(this.state).then(res => {
       this.props.navigation.navigate('Login')
     }).catch(err => {

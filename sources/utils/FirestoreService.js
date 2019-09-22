@@ -9,16 +9,34 @@ const userDetails = () => {
 export default class FirestoreService {
 
   classes = []
-  courses = []
+  courses = [
+    {
+      details: "Secure Programming",
+      code: "CYBR271"
+    },
+    {
+      details: "Database Systems",
+      code: "SWEN304"
+    },
+    {
+      details: "Mobile Application Development",
+      code: "SWEN325"
+    }
+  ] //TODO: Remove this data
   classInfo = {}
 
 
   fetchCourseList() {
     let ret = firebase.firestore().collection(`/users/${userDetails().uid}/courses/`).get()
-    new Promise(() => {
-      ret.then(res => {
-        this.courses = res.docs
+    console.log(ret);
+    ret.then(res => {
+      let courses = []
+      res.docs.forEach(doc => {
+        courses.push(doc.data());
       })
+      this.courses = courses
+    }).catch(err => {
+      console.log(err);
     })
     return ret
   }
@@ -72,7 +90,8 @@ export default class FirestoreService {
   }
 
   async addCourse(data) {
-    let col = await firebase.firestore().collection(`/users/${userDetails().uid}/courses/`)
+    console.log(data);
+    let col = await firebase.firestore().collection('users').doc(userDetails().uid).collection('courses')
     let doc = await col.doc(data.code).get()
     console.log(doc)
     if (!doc.exists) {
@@ -100,8 +119,8 @@ export default class FirestoreService {
     })
   }
 
-  static editCourse(data) {
-    return firebase.firestore().collection(`/users/${userDetails().uid}/courses/`)
+  editCourse(data) {
+    return firebase.firestore().collection('users').doc(userDetails().uid).collection('courses')
       .doc(data.code).set(data).then(res => {
         return true
       }, err => {
@@ -163,6 +182,7 @@ export default class FirestoreService {
   }
 
   async deleteCourse(code) {
+    console.log(code)
     this.courses = this.courses.filter(val => {
       return val.id !== code
     })
@@ -170,7 +190,7 @@ export default class FirestoreService {
       return val.code !== code
     })
     delete this.classInfo[code]
-    firebase.firestore().doc(`/users/${userDetails().uid}/courses/${code}`).delete()
+    firebase.firestore().collection('users').doc(userDetails().uid).collection('courses').doc(code).delete()
   }
 
   async deleteClass(cls) {

@@ -1,5 +1,5 @@
 import React, {useState, Component, ReactDOM} from 'react'
-import {StyleSheet, Platform, Image, Text, View, ScrollView, SafeAreaView} from 'react-native'
+import {StyleSheet, Platform, Image, Text, View, ScrollView, SafeAreaView, YellowBox} from 'react-native'
 import { createAppContainer } from 'react-navigation'
 import {createDrawerNavigator, DrawerActions, DrawerNavigatorItems} from 'react-navigation-drawer'
 import { NavigatorUtil } from './sources/utils/NavigatorUtil'
@@ -63,6 +63,10 @@ class App extends Component {
     this.state = {
       view: 'Login'
     }
+
+    YellowBox.ignoreWarnings([
+      'Warning: componentWillMount is deprecated'
+    ])
   }
 
   updateView(view){
