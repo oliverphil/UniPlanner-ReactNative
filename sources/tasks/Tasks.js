@@ -66,6 +66,9 @@ export default class Tasks extends Component {
             return (
               <ListItem key={key} title={task.details} subtitle={task.code} rightElement={
                 <React.Fragment>
+                  <Text>
+                    {task.dueDate.toDateString()}{'  '}
+                  </Text>
                   <Icon name='edit' onPress={() => this.setState({overlay: !this.state.overlay, task: task, edit: true})} />
                   <Text>{'  '}</Text>
                   <Icon name='delete' onPress={() => {

@@ -194,7 +194,7 @@ export default class FirestoreService {
         let taskDate = new Date(task.dueDate)
         if(taskDate.getFullYear() > todayDate.getFullYear()){
           later.push(task)
-        } else if(task.getFullYear() === todayDate.getFullYear()){
+        } else if(taskDate.getFullYear() === todayDate.getFullYear()){
           if(taskDate.getMonth() > todayDate.getMonth()){
             later.push(task)
           } else if(taskDate.getMonth() === todayDate.getMonth()){
