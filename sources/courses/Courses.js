@@ -108,7 +108,7 @@ class Courses extends React.Component {
             </Overlay>
             <FloatingAction
               onPressMain={() => this.setState({overlay: !this.state.overlay, edit: false})}
-              floatingIcon={<Icon name='add' />}
+              floatingIcon={<Icon name='add' color='white' />}
               showBackground={false}
             />
           </View>
