@@ -54,6 +54,7 @@ class NewOrEditCourse extends Component {
         <RNPickerSelect
           onValueChange={code => this.setState({code})}
           items={this.getPickerItems()}
+          value={this.state.code}
           />
         <Text>Due Date:</Text>
         <DatePicker minuteInterval={10}  minimumDate={new Date(Date.now())} onDateChange={date => this.setState({dueDate: date})} date={this.state.dueDate} />

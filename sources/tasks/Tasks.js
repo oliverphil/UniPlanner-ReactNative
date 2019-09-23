@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {ActivityIndicator, Text, View} from "react-native";
+import {ActivityIndicator, Slider, Text, View} from "react-native";
 import {Icon, ListItem, Overlay} from "react-native-elements";
 import NewOrEditCourse from "../courses/NewOrEditCourse";
 import {FloatingAction} from "react-native-floating-action";
@@ -90,7 +90,7 @@ export default class Tasks extends Component {
           :
           <View style={{height: '95%'}}>
             {this.renderTasks()}
-            <Overlay isVisible={this.state.overlay} onBackdropPress={() => this.setState({overlay: !this.state.overlay})} height="auto" >
+            <Overlay isVisible={this.state.overlay} onBackdropPress={() => this.setState({overlay: !this.state.overlay})} height="auto" width="auto" >
               <NewOrEditTask
                 title={this.state.edit ? "Edit Task" : "Create a New Task"}
                 task={this.state.edit ? this.state.task : {

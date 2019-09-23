@@ -169,6 +169,45 @@ export default class FirestoreService {
     return this.whichClassesToday(this.fetchAllClassesNow())
   }
 
+  fetchTasksToday() {
+    return this.fetchAllTasks().then(tasks => {
+      let today = []
+      let todayDate = new Date(Date.now())
+      tasks.forEach(task => {
+        let taskDate = new Date(task.dueDate)
+        if(taskDate.getDate() === todayDate.getDate()
+        && taskDate.getMonth() === todayDate.getMonth()
+        && taskDate.getFullYear() === todayDate.getFullYear()){
+          task.dueDate = new Date(task.dueDate)
+          today.push(task)
+        }
+      })
+      return today
+    })
+  }
+
+  fetchTasksLater() {
+    return this.fetchAllTasks().then(tasks => {
+      let later = []
+      let todayDate = new Date(Date.now())
+      tasks.forEach(task => {
+        let taskDate = new Date(task.dueDate)
+        if(taskDate.getFullYear() > todayDate.getFullYear()){
+          later.push(task)
+        } else if(task.getFullYear() === todayDate.getFullYear()){
+          if(taskDate.getMonth() > todayDate.getMonth()){
+            later.push(task)
+          } else if(taskDate.getMonth() === todayDate.getMonth()){
+            if(taskDate.getDate() > todayDate.getDate()){
+              later.push(task)
+            }
+          }
+        }
+      })
+      return later
+    })
+  }
+
   whichClassesToday(allClasses) {
     let today = new Date(Date.now())
     let todayClasses = []
@@ -266,7 +305,7 @@ export default class FirestoreService {
   editTask(tsk) {
     let dueDate = new Date(tsk.dueDate)
     let editedTask = {...tsk}
-    editedTask.dueDate = Number((dueDate.getHours() * 100) + dueDate.getMinutes())
+    editedTask.dueDate = editedTask.dueDate.toString()
     return firebase.firestore().collection('users').doc(userDetails().uid).collection('courses')
       .doc(tsk.code).collection('tasks').doc(tsk.id).set(editedTask).then(res => {
         return true
