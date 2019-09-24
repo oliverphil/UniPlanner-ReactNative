@@ -28,6 +28,9 @@ class Courses extends React.Component {
     this.updateCourses.bind(this)();
   }
 
+  /**
+   * Update courses in the state with the courses in firebase.
+   */
   updateCourses() {
     //fetch the course list from firebase
     this.firestore.fetchCourseList().then(data => {
@@ -44,6 +47,12 @@ class Courses extends React.Component {
     })
   }
 
+  /**
+   * Render the courses.
+   * Checks if there are any courses present,
+   * renders the relevant data if there are.
+   * @returns {*} - the relevant React tags for the course list.
+   */
   renderCourses() {
     if(!this.state.courses || this.state.courses < 1) {
       return (

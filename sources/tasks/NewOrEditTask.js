@@ -12,10 +12,10 @@ class NewOrEditCourse extends Component {
     this.state = { ...props.task }
   }
 
-  onChange(code) {
-    this.setState({code})
-  }
-
+  /**
+   * Fetch the list of courses to add to the picker.
+   * @returns {[]} - list of courses created by the user.
+   */
   getPickerItems(){
     let items = []
     this.props.courses.forEach(course => {
@@ -25,7 +25,6 @@ class NewOrEditCourse extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <View>
         <Text class='header'>
@@ -37,20 +36,6 @@ class NewOrEditCourse extends Component {
         />
         <Input placeholder="Task Details" value={this.state.details} onChangeText={text => this.setState({details: text})} />
         <Text>Course:</Text>
-        {/*<Picker*/}
-        {/*  selectedValue={this.state.code}*/}
-        {/*  onValueChange={code => {*/}
-        {/*    this.setState({code})*/}
-        {/*    this.onChange(code)*/}
-        {/*  }}*/}
-        {/*  enabled={true}*/}
-        {/*>*/}
-        {/*  {this.props.courses.map((course, key) => {*/}
-        {/*    return (*/}
-        {/*      <Picker.Item key={key} label={course.code} value={course.code}  />*/}
-        {/*    )*/}
-        {/*  })}*/}
-        {/*</Picker>*/}
         <RNPickerSelect
           onValueChange={code => this.setState({code})}
           items={this.getPickerItems()}

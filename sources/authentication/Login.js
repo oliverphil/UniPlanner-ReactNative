@@ -6,9 +6,9 @@ export default class Login extends React.Component {
 
   state = { email: '', password: '', errorMessage: null }
 
-  handleLogin = () => {
-
+  handleLogin() {
     AuthenticationService.loginUser(this.state).then(res => {
+      // redirect user to Dashboard page.
       this.props.screenProps.updateFunc('Dashboard')
       this.props.navigation.navigate('Main')
     }).catch(err => {
@@ -43,11 +43,7 @@ export default class Login extends React.Component {
           />
         </View>
         <View>
-          <Button id="login" title="Login" onPress={this.handleLogin} />
-          {/*<Button*/}
-          {/*  title="Don't have an account? Sign Up"*/}
-          {/*  onPress={() => this.props.navigation.navigate('Register')}*/}
-          {/*/>*/}
+          <Button id="login" title="Login" onPress={this.handleLogin.bind(this)} />
           <Button id="register" title="Register" onPress={() => this.props.navigation.navigate('Register')} />
         </View>
       </React.Fragment>

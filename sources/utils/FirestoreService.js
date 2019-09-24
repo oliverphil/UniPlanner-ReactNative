@@ -1,6 +1,5 @@
 import * as firebase from "react-native-firebase"
 import AuthenticationService from "./FirebaseUtils";
-import {UtilsService} from "./UtilsService";
 
 const userDetails = () => {
   return AuthenticationService.userDetails()
@@ -8,11 +7,12 @@ const userDetails = () => {
 
 export default class FirestoreService {
 
-  classes = []
   courses = []
-  classInfo = {}
 
-
+  /**
+   * Fetch the course list from firestore.
+   * @returns {Promise<QuerySnapshot>}
+   */
   fetchCourseList() {
     let ret = firebase.firestore().collection('users').doc(userDetails().uid).collection('courses').get()
     ret.then(res => {
@@ -27,26 +27,19 @@ export default class FirestoreService {
     return ret
   }
 
+  /**
+   * Fetch the cached course list.
+   * @returns {[]} - a list of courses which has been cached locally.
+   */
   fetchCourseListNow() {
     return this.courses;
   }
 
-  async fetchClassInfo(courseCode) {
-    let classes = []
-    if (!userDetails())
-      return classes;
-    await firebase.firestore().collection(`/users/${userDetails().uid}/courses/${courseCode}/classes`).get()
-      .then(cls => {
-        cls.docs.forEach(doc => {
-          let data = doc.data()
-          data.id = doc.id
-          classes.push(data)
-        })
-      })
-    this.classInfo[courseCode] = classes
-    return classes
-  }
-
+  /**
+   * Fetch the list of tasks for a course.
+   * @param courseCode - the course to fetch tasks for.
+   * @returns {Promise<[]>}
+   */
   async fetchTaskInfo(courseCode) {
     let tasks = []
     if(!userDetails())
@@ -64,30 +57,10 @@ export default class FirestoreService {
     return tasks
   }
 
-  fetchClassInfoNow(courseCode) {
-    return this.classInfo[courseCode]
-  }
-
-  async fetchAllClasses() {
-    let courses = this.fetchCourseList();
-    let courseDocs = await courses.then(result => {
-      return result.docs
-    })
-    let docs = []
-    courseDocs.forEach(doc => {
-      docs.push(doc.data())
-    })
-    let classes = []
-    for (let course of docs) {
-      let cls = await this.fetchClassInfo(course.code).then(result => {
-        return result
-      })
-      classes = classes.concat(cls)
-    }
-    this.classes = classes
-    return classes
-  }
-
+  /**
+   * Fetch all the tasks for this user.
+   * @returns {Promise<[]>}
+   */
   async fetchAllTasks() {
     let courses = this.fetchCourseList()
     let courseDocs = await courses.then(res => {
@@ -110,10 +83,11 @@ export default class FirestoreService {
     return tasks
   }
 
-  fetchAllClassesNow() {
-    return this.classes
-  }
-
+  /**
+   * Add a course to firestore.
+   * @param data - the course to add.
+   * @returns {Promise<boolean>}
+   */
   async addCourse(data) {
     console.log(data);
     let col = await firebase.firestore().collection('users').doc(userDetails().uid).collection('courses')
@@ -132,18 +106,11 @@ export default class FirestoreService {
     }
   }
 
-  addClass(data) {
-    let col = firebase.firestore().collection(`/users/${userDetails().uid}/courses/${data.code}/classes`)
-    let startTime = new Date(data.startTime)
-    let endTime = new Date(data.endTime)
-    data.startTime = (startTime.getHours() * 100) + startTime.getMinutes()
-    data.endTime = (endTime.getHours() * 100) + endTime.getMinutes()
-    col.add(data).then(res => {
-      this.classes.push(data)
-      this.classInfo[data.code] = data
-    })
-  }
-
+  /**
+   * Add a task to firestore.
+   * @param data - the task to add.
+   * @returns {Promise<DocumentReference>}
+   */
   addTask(data) {
     let col = firebase.firestore().collection('users').doc(userDetails().uid).collection('courses').doc(data.code).collection('tasks')
     let dueDate = data.dueDate
@@ -151,6 +118,11 @@ export default class FirestoreService {
     return col.add(data)
   }
 
+  /**
+   * Edit a course.
+   * @param data - the new values to update.
+   * @returns {Promise<boolean>}
+   */
   editCourse(data) {
     return firebase.firestore().collection('users').doc(userDetails().uid).collection('courses')
       .doc(data.code).set(data).then(res => {
@@ -160,15 +132,10 @@ export default class FirestoreService {
       });
   }
 
-  async fetchClassesToday() {
-    let allClasses = await this.fetchAllClasses()
-    return this.whichClassesToday(allClasses)
-  }
-
-  fetchClassesTodayNow() {
-    return this.whichClassesToday(this.fetchAllClassesNow())
-  }
-
+  /**
+   * Fetch all the tasks due today.
+   * @returns {Promise<any>|Promise<[]>}
+   */
   fetchTasksToday() {
     return this.fetchAllTasks().then(tasks => {
       let today = []
@@ -186,6 +153,10 @@ export default class FirestoreService {
     })
   }
 
+  /**
+   * Fetch all the tasks due after today.
+   * @returns {Promise<any>|Promise<[]>}
+   */
   fetchTasksLater() {
     return this.fetchAllTasks().then(tasks => {
       let later = []
@@ -208,100 +179,33 @@ export default class FirestoreService {
     })
   }
 
-  whichClassesToday(allClasses) {
-    let today = new Date(Date.now())
-    let todayClasses = []
-    for (let cls of allClasses) {
-      if (FirestoreService.isClassOnDate(cls, today)) {
-        todayClasses.push(cls)
-      }
-    }
-    return todayClasses;
-  }
-
-  static isClassOnDate(cls, date: Date): boolean {
-    let dayNum = date.getDay()
-    for (let day of cls.day) {
-      let thisDayNum
-      switch (day) {
-        case "monday":
-          thisDayNum = 1;
-          break;
-        case "tuesday":
-          thisDayNum = 2;
-          break;
-        case "wednesday":
-          thisDayNum = 3;
-          break;
-        case "thursday":
-          thisDayNum = 4;
-          break;
-        case "friday":
-          thisDayNum = 5;
-          break;
-        case "saturday":
-          thisDayNum = 6;
-          break;
-        default:
-          thisDayNum = 0;
-      }
-      if (thisDayNum === dayNum)
-        return true;
-    }
-
-    return false;
-  }
-
+  /**
+   * Delete a course from firestore.
+   * @param code - the course code to remove.
+   * @returns {Promise<void>}
+   */
   async deleteCourse(code) {
-    console.log(code)
     this.courses = this.courses.filter(val => {
       return val.id !== code
     })
-    this.classes = this.classes.filter(val => {
-      return val.code !== code
-    })
-    delete this.classInfo[code]
     firebase.firestore().collection('users').doc(userDetails().uid).collection('courses').doc(code).delete()
   }
 
-  async deleteClass(cls) {
-    this.classes = this.classes.filter(val => {
-      return val.id !== cls.id
-    })
-    let course = this.classInfo[cls.code]
-    this.classInfo[cls.code] = course.filter(val => {
-      return val.id !== cls.id
-    })
-    firebase.firestore().doc(`/users/${userDetails().uid}/courses/${cls.code}/classes/${cls.id}`).delete()
-  }
-
+  /**
+   * Delete a course from firestore.
+   * @param task - the task to remove.
+   * @returns {Promise<void>}
+   */
   deleteTask(task) {
     return firebase.firestore().collection('users').doc(userDetails().uid).collection('courses')
       .doc(task.code).collection('tasks').doc(task.id).delete()
   }
 
-  editClass(cls) {
-    let startTime = new Date(cls.startTime)
-    let endTime = new Date(cls.endTime)
-    let editedClass = {...cls}
-    editedClass.startTime = Number((startTime.getHours() * 100) + startTime.getMinutes())
-    editedClass.endTime = Number((endTime.getHours() * 100) + endTime.getMinutes())
-    this.classes = this.classes.filter(val => {
-      return val.id !== cls.id
-    })
-    this.classes.push(editedClass)
-    this.classInfo[cls.code] = this.classInfo[cls.code].filter(val => {
-      return val.id !== cls.id
-    })
-    this.classInfo[cls.code].push(editedClass)
-    return firebase.firestore().collection(`/users/${userDetails().uid}/courses/${cls.code}/classes/`)
-      .doc(cls.id).set(editedClass).then(res => {
-        return true
-      }, err => {
-        return false
-      })
-  }
-
+  /**
+   * Edit a task in firestore.
+   * @param tsk - the new values to update.
+   * @returns {Promise<boolean>}
+   */
   editTask(tsk) {
     let dueDate = new Date(tsk.dueDate)
     let editedTask = {...tsk}

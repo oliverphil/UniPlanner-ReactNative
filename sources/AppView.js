@@ -5,8 +5,12 @@ import Dashboard from "./Dashboard";
 import Courses from "./courses/Courses"
 import Tasks from "./tasks/Tasks"
 
+/**
+ * Return the view to populate the main app page.
+ * @param props - props from AppView
+ * @returns {*} - View to render.
+ */
 const getView = (props) => {
-  console.log(props)
   const view = props.screenProps.view
   if(view === "Dashboard") {
     return (
@@ -23,24 +27,9 @@ const getView = (props) => {
   }
 }
 
-// export const AppView = props => {
-//   console.log(props);
-//   return (
-//     <Fragment>
-//       <Header leftComponent={
-//         <Icon name="menu" onPress={() => props.navigation.dispatch(DrawerActions.toggleDrawer())} />
-//       } centerComponent={{text: props.view}} containerStyle={{
-//         paddingTop: 0
-//       }} />
-//       {getView(props)}
-//     </Fragment>
-//   )
-// }
-
 export class AppView extends React.Component{
 
   render() {
-    console.log(this.props)
     return (
       <Fragment>
         <Header leftComponent={

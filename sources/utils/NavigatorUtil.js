@@ -11,6 +11,12 @@ const updateNav = (props, target) => {
   }
 }
 
+/**
+ * Represents the options for the Drawer menu.
+ * @param props - props from App.
+ * @returns {*} - the list of elements to render.
+ * @constructor
+ */
 export const NavigatorUtil = props => (
   <View>
     <ListItem leftAvatar={

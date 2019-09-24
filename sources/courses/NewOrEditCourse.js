@@ -13,7 +13,6 @@ class NewOrEditCourse extends Component {
     }
   }
 
-
   render() {
     return (
       <View>

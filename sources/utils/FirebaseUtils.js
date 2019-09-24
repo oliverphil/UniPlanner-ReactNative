@@ -2,6 +2,11 @@ import * as firebase from "react-native-firebase";
 
 export default class AuthenticationService {
 
+  /**
+   * Register a user in firebase authentication.
+   * @param value - {email, password}
+   * @returns {Promise<boolean>}
+   */
   static async registerUser(value) {
     let {email, password} = value
 
@@ -15,35 +20,29 @@ export default class AuthenticationService {
       .catch(err => {
         return false;
       })
-    // return new Promise<any>((res) => {
-    //   return create
-    // })
     return create
   }
 
+  /**
+   * Logout a user.
+   */
   static logout() {
     firebase.auth().signOut()
   }
 
-
-  static logoutUser() {
-    return new Promise((resolve, reject) => {
-      if (firebase.auth().currentUser) {
-        firebase.auth().signOut()
-          .then(() => {
-            console.log("Log Out");
-            resolve();
-          }).catch((error) => {
-          reject();
-        });
-      }
-    })
-  }
-
+  /**
+   * Fetch the user details.
+   * @returns {OrNull<User>}
+   */
   static userDetails() {
     return firebase.auth().currentUser;
   }
 
+  /**
+   * Login a user.
+   * @param value - {email, password}
+   * @returns {Promise<R>}
+   */
   static loginUser(value) {
     return new Promise((resolve, reject) => {
       firebase.auth().signInWithEmailAndPassword(value.email, value.password)

@@ -28,26 +28,23 @@ export default class Tasks extends Component {
     this.updateTasks.bind(this)();
   }
 
+  /**
+   * Update the local task list with data from firestore.
+   */
   updateTasks() {
-    //fetch the course list from firebase
+    //fetch the task list from firebase
     this.firestore.fetchAllTasks().then(data => {
-      console.log(data)
-      // let tasks = []
-      // if(!data.empty) {
-      //   data.docs.forEach(task => {
-      //     let taskData = task.data()
-      //     tasks.push(taskData)
-      //   })
-      // }
-      // console.log(tasks)
       this.setState({tasks: data, waiting: false})
     }).catch(err => {
       this.setState({waiting: false})
     })
   }
 
+  /**
+   * Render the task list.
+   * @returns {*} - the React tags for the task list.
+   */
   renderTasks() {
-    console.log(this.state.tasks);
     if(!this.state.tasks || this.state.tasks.length < 1) {
       return (
         <View style={{marginTop: '55%', marginLeft: 'auto', marginRight: 'auto'}}>

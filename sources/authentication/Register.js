@@ -11,8 +11,11 @@ export default class SignUp extends React.Component {
     errorMessage: null
   }
 
-  handleSignUp = () => {
-    console.log(AuthenticationService)
+  /**
+   * Sign up a user with firebase authentication.
+   */
+  handleSignUp() {
+    // register user then redirect to Login
     AuthenticationService.registerUser(this.state).then(res => {
       this.props.navigation.navigate('Login')
     }).catch(err => {
@@ -20,7 +23,11 @@ export default class SignUp extends React.Component {
     })
   }
 
-  validatePassword = () => {
+  /**
+   * Ensure entered passwords match.
+   * @returns {boolean} - true if passwords match, false otherwise.
+   */
+  validatePassword() {
     return this.state.password === this.state.validate;
   }
 

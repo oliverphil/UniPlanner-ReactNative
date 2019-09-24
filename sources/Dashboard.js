@@ -1,8 +1,6 @@
 import React from 'react'
-import { StyleSheet, Platform, Image, Text, View } from 'react-native'
-import {Header, ListItem} from 'react-native-elements'
-import { DrawerActions } from 'react-navigation-drawer';
-import AuthenticationService from "./utils/FirebaseUtils";
+import { StyleSheet, Text, View } from 'react-native'
+import {ListItem} from 'react-native-elements'
 
 
 export default class Dashboard extends React.Component {
@@ -14,6 +12,9 @@ export default class Dashboard extends React.Component {
     this.updateTasks.bind(this)()
   }
 
+  /**
+   * Update the state task list with data from firestore.
+   */
   updateTasks() {
     const firestore = this.props.screenProps.storage
     firestore.fetchTasksToday().then(tasksToday => {
@@ -24,6 +25,12 @@ export default class Dashboard extends React.Component {
     })
   }
 
+  /**
+   * Render the tasks for the dashboard
+   * @param title - the title for Today or Later.
+   * @param tasks - the list of tasks.
+   * @returns {*} - React components to render.
+   */
   renderTasks(title, tasks) {
     return (
       <View>
@@ -48,7 +55,7 @@ export default class Dashboard extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        {this.renderTasks("today", this.state.tasksToday)}{'\n'}
+        {this.renderTasks("today", this.state.tasksToday)}
         {this.renderTasks("later", this.state.tasksLater)}
       </View>
     )
@@ -57,8 +64,6 @@ export default class Dashboard extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    // justifyContent: 'center',
-    // alignItems: 'center'
+    flex: 1
   }
 })
