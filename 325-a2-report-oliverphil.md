@@ -1,4 +1,4 @@
-### SWEN325 Assignment 1 Report
+### SWEN325 Assignment 2 Report
 ###### Philip Oliver 300398228
 
 #### Application Architecture
@@ -99,7 +99,7 @@ These are all users that have registered through the application. Registration a
 authentication was facilitated through my FirebaseUtils.js file, in which 
 communication with Firebase happened through the react-native-firebase library.   
 In addition to this, when a user was created, an entry for that user was created in the 
-database. This was done so that the user would be able to add courses and classes for 
+database. This was done so that the user would be able to add courses and tasks for 
 their use of the application.
 
 ##### Database
@@ -165,83 +165,91 @@ difficulties in adding things to build.gradle files.
 
 #### UX Decisions
 
-##### Log In Button
+##### Log In Page
 
 One of the first UX decisions I made while creating this application was as an 
 alternative to the login page in my ionic app. I decided to use the firebase error
 messages and display them above the email text input. Such an error message can be
 seen in the below image. 
 
-![](rn-login-fail.jpg)
+![](rn-login-fail.png)
 
-An alternative option which I was considering was to always have the Log In button enabled,
-and if the user entered an invalid email or password then there would be an error message 
-displayed underneath the text field as can be seen below.
+This option ensures that the user will understand why their login failed in the case that 
+it does. This is good practise, as the user is not left in the dark about why their login
+failed, and know what they need to change to make it work.
+
+An alternative option I considered was my implementation from the previous application in 
+ionic. This implementation (as can be seen below) had the log-in button grayed out when 
+the user had not entered valid details. 
 
 ![](login-page-invalid.png)
 
-![](login-page-alternative.png)
 
-I decided to opt for the first option for a number of reasons:
-* The first option looks much cleaner. It is clear that the email and password must be 
-valid to click the Log In button. In addition to this, the disabled/enabled button fits
-a standard Android user's experience in mobile applications.
-* The second option doesn't have space for the error messages to show up, so if a user
-enters an invalid email and the error message shows up everything on the page below the 
-error message will have moved down. If a user has to reenter information in the form
-but the form has moved, this could easily throw them off. Muscle memory is a large part
-of the design.
+I decided to opt for the first option for one main reason:
+* The first option, while not as tidy as the second, provides the user with much 
+more information about why their login didn't work. In addition to this, it makes
+the most of firebase's built-in error handling and thus made the implementation much
+simpler. 
 
 ##### Create New Button
 
 Another UX decision I made was to use a floating button in the bottom right of the screen
-for adding new courses and classes. 
+for adding new courses and tasks. 
 
-![](courses-page.png)
+![](rn-add-button.png)
 
-An alternative option I explored was to have some text underneath the courses or classes
-which included a link to the add new course/class page. This is not dissimilar from how the 
-page looks when there are no courses or classes which can be seen below. However, the text
-would simply read "Add a Course" and would be positioned in an \<ion-item\> tag right underneath
-the courses or classes.
+An alternative option I explored was to have some text underneath the courses or tasks
+which included a link to the add new course/task page. This is not dissimilar from how the 
+page looks when there are no courses or tasks which can be seen below. However, the text
+would simply read "Add a Course" and would be positioned in a \<Text\> tag right underneath
+the courses or tasks.
 
-![](courses-page-empty.png)
+![](rn-empty-courses.png)
 
 The reasons I chose the first option were:
 * The floating nature of the button means that if the whole page were to be filled with 
-courses/classes, the button would always remain in the same position and would display
-over the courses/classes. This allows the user to easily add a course/class without having 
+courses/tasks, the button would always remain in the same position and would display
+over the courses/tasks. This allows the user to easily add a course/task without having 
 to find where the button has moved to.
 * The fixed position of the button in the lower right corner is in an optimal position for the
 standard user. It is easily accessible by a small thumb movement and requires little effort
-to reach. If the other option were chosen and there were no, or a small number of courses/classes
-the user would have to reach to the top of the screen to add a new course/class.
+to reach. If the other option were chosen and there were no, or a small number of courses/tasks
+the user would have to reach to the top of the screen to add a new course/task.
 * The lower right placement of a floating button is seen frequently in Android applications.
 This means that a user would instinctively know what the button would do, as they will have seen
 this in other applications, as it is a somewhat unified design.
 
-##### Exit Menu Button
+##### Menu Bar
 
-Another UX decision I made was to include a 'back' arrow in the side-menu to allow a user to 
-easily close the menu. This can be seen in the top left of the image below.
+The final UX decision I made was the implementation of the menu bar. While this does
+not at first seem like a UX decision in itself, it was done to improve the functionality
+through speed, and to reduce the overall size of the application. The menu bar can be
+seen in the below screenshot. It is the blue bar at the top of the screen.
 
-![](menu-overlay.png)
+![](rn-empty-courses.png)
 
-An alternative option was to simply not have the button at all. This option can be seen in 
-the image below. The menu simply has the title 'Menu', with no back arrow.
+The implementation of the menu bar can be seen below. The menu bar (\<Header\>)
+is only rendered in one component; the AppView. The content underneath the 
+menu bar is rendered through the use of the getView functional component. This
+finds the relevant view to render it and renders it below the Header component
+without also requiring re-render of the Header. 
 
-![](menu-overlay-no-button.png)
+![](rn-menu-implementation.png)
 
-The reasons I chose to have the button were:
-* It provides one-spot access to the menu. A user can both open and close the menu with the 
-same gesture. They simply have to press at the top left of their screen. This allows familiarity
-to the user, while also allowing quick access and close the menu if the user changes their mind
-on if they want to use the menu.
-* It allows the user multiple options to exit the menu. Not only can they swipe the menu away, or
-tap outside the menu to close it, but they can also close it with a button. This allows the user
-to choose which way they want to close the menu. Different users have their preferences for how 
-to open or close something as trivial as a side-menu, so allowing the user to choose their preference
-provides a more user-friendly experience.
+The alternative I explored was to have a different menu bar at the top of each page.
+This option would have required the menu bar to be rendered on each page, and every time
+the user switched pages.
+
+The reasons I chose the first option were:
+* Speed: an application should be fast, and if the user is waiting for a page to render
+and it is taking too long because it has to rerender a component which is identical
+on every page, then this should be changed. 
+* Space: If the application has the same component on every page, then that component is
+taking up more space then it needs. The component should only be needed to be stored
+once at most.
+* Good Style: Modular design is good practice for software, so to refactor an application
+to ensure that the design is modular and not doing the same thing in multiple different places
+is a good trade off. 
 
 <div style="page-break-after: always;"></div>
 
@@ -249,45 +257,35 @@ provides a more user-friendly experience.
 
 ##### Login Page
 
-The login page has 3 main components: email and password fields, and a log in button.
-The log in button is only activate when valid email and passwords have been entered.
+The login page has 4 main components: email and password fields, and log in and register buttons.
 Once the log in button has been clicked, if the user is successfully logged in they are redirected
-to the home page. If the user clicks on 'Create an account' they are redirected to the register page.
+to the home page. If the user clicks on the register they are redirected to the register page.
 
-![](login-page.png)
+![](rn-login-page.png)
 
 <div style="page-break-after: always;"></div>
 
 ##### Register Page
 
 The register page has 4 main components: email, password, and re-enter password fields, and 
-a register button. The register button is only active when a valid email and password have been
-entered, and also only when the 2 passwords match. When the register button is clicked, a pop-up
-shows to alert the user if their registration was successful or not. If it was successful there is 
+a sign up button. The sign up button is only active when a valid email and password have been
+entered, and also only when the 2 passwords match. If it was successful there is 
 a button in the pop-up to let the user navigate to the log in page. 
 If the user clicks on "Try to Log In" they are redirected to the log in page.
 
-![](register-page.png)
+![](rn-register-page.png)
 
 <div style="page-break-after: always;"></div>
 
-##### Home Page
+##### Dashboard
 
-The home page has one main role; it shows the classes that are on today. All the relevant 
-information (course, room, and time) in a block. The home page is all the important information
+The home page has one main role; it shows the tasks that are due today and
+tasks which are due later. All the relevant 
+information (course, task information, and date) in a block. 
+The dashboard is all the important information
 provided by the application for the current time in one place.
 
-![](home-page.png)
-
-<div style="page-break-after: always;"></div>
-
-##### Calendar Page
-
-The calendar page shows all the classes for the current day or week. There are 2 buttons
-to allow a user to switch between the weekly and daily views of the calendar.
-
-![](calendar-page-week.png)
-![](calendar-page-day.png)
+![](rn-dashboard.png)
 
 <div style="page-break-after: always;"></div>
 
@@ -298,7 +296,7 @@ code and a description of the course. In addition to this, each course has an ed
 button to provide the user with quick actions for the courses. This page also has a floating
 button at the bottom right to allow a user to add new courses.
 
-![](courses-page.png)
+![](rn-courses.png)
 
 <div style="page-break-after: always;"></div>
 
@@ -306,35 +304,35 @@ button at the bottom right to allow a user to add new courses.
 
 The new course modal has 3 main components. Text fields for course code and course details. It 
 also has a button to add the course. The button is only active when a course code has been entered
-as this is the primary key for the course in the database. This page also has a back arrow in the
+as this is the primary key for the course in the database. This page also has a cancel button in the
 top left to allow a user to cancel adding a new course if they wish.
 
-![](new-course-page.png)
+![](rn-add-new-course.png)
 
 <div style="page-break-after: always;"></div>
 
-##### Classes Page
+##### Tasks Page
 
-The classes page lists all the classes that a user has created. Each class has the course 
-code and a description of the class, as well as the times, days, and rooms that the classes are in. 
-In addition to this, each class has an edit and delete 
-button to provide the user with quick actions for the classes. This page also has a floating
-button at the bottom right to allow a user to add new classes.
+The tasks page lists all the tasks that a user has created. Each task has the course 
+code and a description of the task, as well as the due date that the tasks are due on. 
+In addition to this, each task has an edit and delete 
+button to provide the user with quick actions for the tasks. This page also has a floating
+button at the bottom right to allow a user to add new tasks.
 
-![](classes-page.png)
+![](rn-tasks.png)
 
 <div style="page-break-after: always;"></div>
 
-##### New Class Page
+##### New Task Page
 
-The new class page has input fields for:
-* Course: these options are populated from the courses that the user has entered
-* Description: this is a simple text field
-* Start/End Time: these are time picker fields
-* Days: this is a multi-option selection of all the days in the week
-* Room: this is a simple text field
+The new task page has input fields for:
+* Title: This input field is for the task title.
+* Details: This input field allows the user to write more about what the task involves.
+* Course: This is pre-populated with the courses the user has added. 
+* Due Date: This is a date picker which allows the user to select the date and time the 
+task is due.
 
-This page also has a button to add the course. In addition to this, the page has a back
-arrow in the top left to allow a user to cancel adding a new class if they wish.
+This page also has a button to add the task. In addition to this, the page has a cancel button
+to allow a user to cancel adding a new task if they wish.
 
-![](new-class-page.png)
+![](rn-add-new-task.png)
