@@ -154,22 +154,31 @@ to mix together different layers, thus not following the mobile architecture gui
 
 ##### Possible Improvements
 Some possible improvements that could be made to react native are:
-* 
+* More consistent documentation throughout versions. This would help to ensure
+that applications break less frequently, as there would be consistent documentation
+for each version. In addition to this, versions should have information about what 
+they will contain or make deprecated prior to versions being released.
+* A more straightforward setup process. This would make application development 
+far more accessible. This would also benefit from better documentation, which would
+provide instructions on how to set up an application in different versions and without
+difficulties in adding things to build.gradle files. 
 
 #### UX Decisions
 
 ##### Log In Button
 
-One of the first UX decisions I made while creating this application was in the use of the 
-log in button. The decision I made was to have the Log In button disabled if the user had not
-entered a valid email and password as can be seen below.
+One of the first UX decisions I made while creating this application was as an 
+alternative to the login page in my ionic app. I decided to use the firebase error
+messages and display them above the email text input. Such an error message can be
+seen in the below image. 
 
-![](login-page-invalid.png)
-![](login-page-valid.png)
+![](rn-login-fail.jpg)
 
 An alternative option which I was considering was to always have the Log In button enabled,
 and if the user entered an invalid email or password then there would be an error message 
 displayed underneath the text field as can be seen below.
+
+![](login-page-invalid.png)
 
 ![](login-page-alternative.png)
 
